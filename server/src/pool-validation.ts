@@ -28,6 +28,9 @@ export function getPoolConfigError(pool: PoolConfig, label: string): string | nu
   )) {
     return `${label} JD port must be between 1 and 65535`;
   }
+  if (pool.coinbase_transaction_payouts !== undefined && typeof pool.coinbase_transaction_payouts !== 'boolean') {
+    return `${label} Coinbase Transaction Payouts must be true or false`;
+  }
   if (!isSafeBoundedString(pool.authority_public_key, MAX_AUTHORITY_KEY_LENGTH) || !isValidPoolAuthorityPubkey(pool.authority_public_key)) {
     return `${label} authority public key is invalid`;
   }

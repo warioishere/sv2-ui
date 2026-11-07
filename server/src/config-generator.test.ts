@@ -533,3 +533,43 @@ test('translator config serializes integer min hashrates with .0 suffix', () => 
 
   assert.match(config, /min_individual_miner_hashrate = 100000000000000\.0$/m);
 });
+
+test('jdc config turns on Coinbase Transaction Payouts only for the pools that ask for it', () => {
+  const config = generateJdcConfig({
+    ...BASE_DATA_31,
+    pool: {
+      ...BASE_DATA_31.pool!,
+      coinbase_transaction_payouts: true,
+    },
+    fallbackPools: [
+      {
+        name: 'Fallback Pool',
+        address: 'fallback.pool.com',
+        port: 4444,
+        authority_public_key: 'fallback-key',
+        user_identity: 'miner.fallback',
+      },
+    ],
+  });
+
+  assert.ok(config);
+  const fallbackIndex = config.indexOf('pool_address = "fallback.pool.com"');
+
+  assert.ok(fallbackIndex > 0);
+  assert.match(
+    config.slice(0, fallbackIndex),
+    /\[\[upstreams\]\][\s\S]*user_identity = "miner\.worker1"\ncoinbase_transaction_payouts = true\n/,
+  );
+  assert.equal(config.slice(fallbackIndex).includes('coinbase_transaction_payouts'), false);
+  assert.equal(generateJdcConfig(BASE_DATA_31)!.includes('coinbase_transaction_payouts'), false);
+});
+
+test('normalization keeps a pool\'s Coinbase Transaction Payouts setting', () => {
+  const normalized = normalizeSetupData({
+    ...BASE_DATA_31,
+    pool: { ...BASE_DATA_31.pool!, coinbase_transaction_payouts: true },
+  });
+
+  assert.equal(normalized.pool?.coinbase_transaction_payouts, true);
+  assert.equal('coinbase_transaction_payouts' in normalizeSetupData(BASE_DATA_31).pool!, false);
+});

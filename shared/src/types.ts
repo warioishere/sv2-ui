@@ -16,6 +16,12 @@ export interface PoolConfig {
   user_identity: string;
   /** UI-only marker: true when the user explicitly customized this pool's identity. Never emitted to the generated miner config. */
   user_identity_customized?: boolean;
+  /**
+   * JD mode only: JDC negotiates the Coinbase Transaction Payouts extension (0x0003) with this
+   * pool and its JDS, and every coinbase declared there pays the pool's payout distribution.
+   * Only for a pool whose JDS implements the extension.
+   */
+  coinbase_transaction_payouts?: boolean;
 }
 
 export interface BitcoinConfig {

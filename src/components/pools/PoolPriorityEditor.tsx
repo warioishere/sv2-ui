@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { ArrowDown, ArrowUp, GripVertical, Plus, X } from 'lucide-react';
 import { DEFAULT_POOL_PORT, MAX_FALLBACK_POOLS, type MiningMode, type PoolConfig } from '@sv2-ui/shared';
 import { FieldError } from '@/components/ui/field-error';
+import { Switch } from '@/components/ui/switch';
 import { PoolIcon } from '@/components/ui/pool-icon';
 import {
   createEmptyCustomPool,
@@ -446,6 +447,29 @@ function CustomPoolFields({
           <FieldError message={pubkeyError} />
         </div>
       </div>
+
+      {isJdMode && (
+        <div className="mt-3 flex items-center justify-between gap-4">
+          <div className="space-y-0.5">
+            <p id={`${idPrefix}-ctp-label`} className="text-xs font-medium text-muted-foreground">
+              Coinbase Transaction Payouts (0x0003)
+            </p>
+            <p id={`${idPrefix}-ctp-desc`} className="text-xs text-muted-foreground">
+              The coinbase pays the pool&apos;s payout distribution. Only for a pool whose JDS supports it.
+            </p>
+          </div>
+          <Switch
+            id={`${idPrefix}-ctp-switch`}
+            checked={pool.coinbase_transaction_payouts === true}
+            onCheckedChange={(checked) => {
+              const { coinbase_transaction_payouts: _previous, ...rest } = pool;
+              onChange(checked ? { ...rest, coinbase_transaction_payouts: true } : rest);
+            }}
+            aria-labelledby={`${idPrefix}-ctp-label`}
+            aria-describedby={`${idPrefix}-ctp-desc`}
+          />
+        </div>
+      )}
     </div>
   );
 }

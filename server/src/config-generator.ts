@@ -68,6 +68,9 @@ function normalizePool(pool: PoolConfig | null | undefined, fallbackIdentity: st
     jds_port: legacyPool.jds_port,
     authority_public_key: legacyPool.authority_public_key ?? '',
     user_identity: legacyPool.user_identity || fallbackIdentity,
+    ...(legacyPool.coinbase_transaction_payouts === true
+      ? { coinbase_transaction_payouts: true }
+      : {}),
   };
 }
 
@@ -318,7 +321,7 @@ pool_port = ${upstream.port}
 jds_address = "${upstream.address}"
 jds_port = ${upstream.jds_port ?? 3334}
 user_identity = "${upstream.user_identity}"
-`).join('\n')}
+${upstream.coinbase_transaction_payouts ? 'coinbase_transaction_payouts = true\n' : ''}`).join('\n')}
 `
     : `# No upstreams needed in solo mining mode.
 upstreams = []

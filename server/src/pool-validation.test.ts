@@ -103,3 +103,15 @@ test('accepts an omitted JD port and rejects invalid specified JD ports', () => 
     );
   }
 });
+
+test('rejects a Coinbase Transaction Payouts setting that is not a boolean', () => {
+  assert.equal(getPoolConfigError({ ...VALID_POOL, coinbase_transaction_payouts: true }, 'Primary pool'), null);
+  assert.equal(getPoolConfigError({ ...VALID_POOL, coinbase_transaction_payouts: false }, 'Primary pool'), null);
+  assert.match(
+    getPoolConfigError(
+      { ...VALID_POOL, coinbase_transaction_payouts: 'yes' as unknown as boolean },
+      'Primary pool',
+    ) ?? '',
+    /Coinbase Transaction Payouts must be true or false/,
+  );
+});
