@@ -68,6 +68,19 @@ export const POOL_MINING_JD: KnownPool[] = [
     logoUrl: '/blitzpool.svg',
     invertLogoInDarkMode: true,
   },
+  {
+    id: 'blitzpool',
+    name: 'Blitzpool',
+    address: 'blitzpool.yourdevice.ch',
+    port: 3333,
+    jds_port: 3335,
+    coinbase_transaction_payouts: true,
+    authority_public_key: '9bCoFxTszKCuffyywH5uS5o6WcU4vsjTH2axxc7wE86y2HhvULU',
+    description: 'Solo & Team Mining · Coinbase Transaction Payouts (0x0003)',
+    badge: 'testing',
+    logoUrl: '/blitzpool.svg',
+    invertLogoInDarkMode: true,
+  },
 ];
 
 export const SOLO_POOLS: KnownPool[] = [

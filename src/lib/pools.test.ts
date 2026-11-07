@@ -278,3 +278,18 @@ test('Blitzpool PPLNS preset brings its JD port and Coinbase Transaction Payouts
   });
   assert.equal(isValidPoolAuthorityPubkey(pplns.authority_public_key), true);
 });
+
+test('the Blitzpool JD preset brings its JD port and Coinbase Transaction Payouts', () => {
+  const jdPreset = POOL_MINING_JD.find((pool) => pool.id === 'blitzpool');
+
+  assert.ok(jdPreset);
+  assert.deepEqual(knownPoolToConfig(jdPreset, 'bc1qexample'), {
+    name: 'Blitzpool',
+    address: 'blitzpool.yourdevice.ch',
+    port: 3333,
+    jds_port: 3335,
+    authority_public_key: '9bCoFxTszKCuffyywH5uS5o6WcU4vsjTH2axxc7wE86y2HhvULU',
+    user_identity: 'bc1qexample',
+    coinbase_transaction_payouts: true,
+  });
+});
