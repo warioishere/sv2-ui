@@ -16,6 +16,10 @@ export interface KnownPool {
   monogram?: string;
   invertLogoInDarkMode?: boolean;
   logoScale?: number;
+  /** JD mode only: the port of the pool's JDS, when it is not the default 3334. */
+  jds_port?: number;
+  /** JD mode only: whether JDC negotiates Coinbase Transaction Payouts (0x0003) with this pool. */
+  coinbase_transaction_payouts?: boolean;
   /**
    * Endpoints this preset used before its current one. A setup saved with one
    * of them is still this pool: it keeps the preset's name and logo and is
@@ -50,6 +54,19 @@ export const POOL_MINING_JD: KnownPool[] = [
     description: 'Community testing pool. Payouts go to SRI development.',
     badge: 'testing',
     logoUrl: '/sri-logo.png',
+  },
+  {
+    id: 'blitzpool-pplns',
+    name: 'Blitzpool PPLNS',
+    address: 'blitzpool.yourdevice.ch',
+    port: 3340,
+    jds_port: 3335,
+    coinbase_transaction_payouts: true,
+    authority_public_key: '9bCoFxTszKCuffyywH5uS5o6WcU4vsjTH2axxc7wE86y2HhvULU',
+    description: 'PPLNS paid in the coinbase (Coinbase Transaction Payouts, 0x0003)',
+    badge: 'testing',
+    logoUrl: '/blitzpool.svg',
+    invertLogoInDarkMode: true,
   },
 ];
 
@@ -142,8 +159,10 @@ export function knownPoolToConfig(pool: KnownPool, userIdentity = ''): PoolConfi
     name: pool.name,
     address: pool.address,
     port: pool.port,
+    ...(pool.jds_port !== undefined ? { jds_port: pool.jds_port } : {}),
     authority_public_key: pool.authority_public_key,
     user_identity: userIdentity,
+    ...(pool.coinbase_transaction_payouts ? { coinbase_transaction_payouts: true } : {}),
   };
 }
 

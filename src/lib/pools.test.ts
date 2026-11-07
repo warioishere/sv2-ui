@@ -94,6 +94,7 @@ const SHIPPED_PRESET_ENDPOINTS = [
   { id: 'braiins', address: 'stratum.braiins.com', port: 3333, authority_public_key: '9awtMD5KQgvRUh2yFbjVeT7b6hjipWcAsQHd6wEhgtDT9soosna' },
   { id: 'sri-solo', address: '75.119.150.111', port: 3333, authority_public_key: '9auqWEzQDVyd2oe1JVGFLMLHZtCo2FFqZwtKA5gd9xbuEu7PH72' },
   { id: 'blitzpool', address: 'blitzpool.yourdevice.ch', port: 3333, authority_public_key: '9bCoFxTszKCuffyywH5uS5o6WcU4vsjTH2axxc7wE86y2HhvULU' },
+  { id: 'blitzpool-pplns', address: 'blitzpool.yourdevice.ch', port: 3340, authority_public_key: '9bCoFxTszKCuffyywH5uS5o6WcU4vsjTH2axxc7wE86y2HhvULU' },
   { id: 'ckpool', address: 'sv2solo.ckpool.org', port: 3336, authority_public_key: '9anrRNhBh7869XtNnFcCuGBRZP51E635qGbu457J5kHdszhfRc3' },
   { id: 'ckpool', address: 'stratum.ckpool.org', port: 3336, authority_public_key: '9anrRNhBh7869XtNnFcCuGBRZP51E635qGbu457J5kHdszhfRc3' },
   { id: 'nexuspool', address: 'nexuspool.io', port: 3350, authority_public_key: '9amd6GUzTaGXASESCa75c9Rx3vWYihRyLUAE3Vrmqwgm3T9jtxN' },
@@ -260,4 +261,20 @@ test('getDuplicatePoolEndpointIndexes flags every pool sharing an endpoint', () 
 
   assert.deepEqual([...getDuplicatePoolEndpointIndexes(pools)].sort(), [0, 2],
     'same address (case-insensitive) and port is a duplicate; a different port is not');
+});
+
+test('Blitzpool PPLNS preset brings its JD port and Coinbase Transaction Payouts', () => {
+  const pplns = POOL_MINING_JD.find((pool) => pool.id === 'blitzpool-pplns');
+
+  assert.ok(pplns);
+  assert.deepEqual(knownPoolToConfig(pplns, 'bc1qexample'), {
+    name: 'Blitzpool PPLNS',
+    address: 'blitzpool.yourdevice.ch',
+    port: 3340,
+    jds_port: 3335,
+    authority_public_key: '9bCoFxTszKCuffyywH5uS5o6WcU4vsjTH2axxc7wE86y2HhvULU',
+    user_identity: 'bc1qexample',
+    coinbase_transaction_payouts: true,
+  });
+  assert.equal(isValidPoolAuthorityPubkey(pplns.authority_public_key), true);
 });
