@@ -6,9 +6,12 @@ export const SV2_APP_IMAGES = {
   // Development branches track sv2-apps `main`. The matching release/vX
   // branch replaces all of these with its approved sv2-apps `vX` release
   // tags before sv2-ui is published.
+  //
+  // This branch runs JDC from warioishere/sv2-apps `blitzpool/0x0003-bundle`,
+  // which adds Coinbase Transaction Payouts (0x0003); tProxy is unchanged.
   translatorNoJd: 'stratumv2/translator_sv2:main',
   jd: {
-    jdc: 'stratumv2/jd_client_sv2:main',
+    jdc: 'ghcr.io/warioishere/jd_client_sv2:0x0003',
     translator: 'stratumv2/translator_sv2:main',
   },
 } as const satisfies {

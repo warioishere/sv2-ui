@@ -2,6 +2,13 @@
 
 A unified setup wizard and monitoring dashboard for Stratum V2 mining.
 
+> **Coinbase Transaction Payouts (0x0003) build.** This branch runs JD Client from
+> [warioishere/sv2-apps `blitzpool/0x0003-bundle`](https://github.com/warioishere/sv2-apps/tree/blitzpool/0x0003-bundle),
+> which implements [sv2-spec#203](https://github.com/stratum-mining/sv2-spec/pull/203). In JD mode a pool
+> can be set to Coinbase Transaction Payouts, and the coinbase JDC declares then pays the pool's payout
+> distribution directly. The "Blitzpool PPLNS" preset does this. To try it, run the image of this branch:
+> replace `stratumv2/sv2-ui:main` below with `ghcr.io/warioishere/sv2-ui:0x0003`.
+
 ## Quick Start (Docker)
 
 ```bash
@@ -192,7 +199,7 @@ sv2-ui/
 
 ## Docker Images Used
 
-`sv2-ui` uses `stratumv2/translator_sv2:main` for no-JD stacks on development branches. JD stacks use `stratumv2/jd_client_sv2:main` and `stratumv2/translator_sv2:main`.
+`sv2-ui` uses `stratumv2/translator_sv2:main` for no-JD stacks on development branches. JD stacks use `ghcr.io/warioishere/jd_client_sv2:0x0003` (JDC with Coinbase Transaction Payouts) and `stratumv2/translator_sv2:main`.
 
 Release branches should pin all sv2-apps image tags in `shared/src/images.ts` before publishing.
 

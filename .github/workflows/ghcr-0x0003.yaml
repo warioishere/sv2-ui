@@ -1,0 +1,68 @@
+# Builds sv2-ui from this branch, which runs the 0x0003 JDC from
+# warioishere/sv2-apps, and publishes it as ghcr.io/warioishere/sv2-ui.
+name: Build sv2-ui 0x0003 image (GHCR)
+
+on:
+  push:
+    branches:
+      - feat/coinbase-transaction-payouts
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/warioishere/sv2-ui
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Smoke-test generated configs against selected sv2-apps images
+        run: npm run check:sv2-app-config
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set image tags
+        id: tags
+        run: echo "tags=${IMAGE}:0x0003,${IMAGE}:0x0003-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push multi-arch image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          file: Dockerfile
+          platforms: |
+            linux/amd64
+            linux/arm64
+          tags: ${{ steps.tags.outputs.tags }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/warioishere/sv2-ui
+          cache-from: type=gha,scope=sv2-ui
+          cache-to: type=gha,mode=max,scope=sv2-ui
